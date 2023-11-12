@@ -12,7 +12,7 @@ public class ex0103 {
 	public String solution(String str){
 		String answer="";
 		int m=Integer.MIN_VALUE;
-		String[] s = str.split(" ");
+		String[] s = str.split(" ");  //공백 기준으로 잘라서 String[] 만들기
 		for(String x : s){
 			int len=x.length();
 			if(len>m){
