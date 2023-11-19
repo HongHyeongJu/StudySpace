@@ -163,17 +163,69 @@ public void DFS(int L, int s){
 <br>
 
 ### 미로의 최단거리 통로 BFS
-
-
-
+- 상하좌우 움직임
+- static int[] dx={-1, 0, 1, 0};
+- static int[] dy={0, 1, 0, -1};
+- 지나간 길은 큐에 넣고, 지나간 0번 길을 1로 체크해주면서 거꾸로 가는 것을 방지
+- 반복문으로 Point tmp=Q.poll(); 꺼내면서
+- for(int i=0; i<4; i++) 반복문으로 
+````
+int nx=tmp.x+dx[i];   
+int ny=tmp.y+dy[i];
+if(nx>=1 && nx<=7 && ny>=1 && ny<=7 && board[nx] [ny]==0)
+    {board[nx][ny]=1;
+    Q.offer(new Point(nx, ny));
+    dis[nx][ny]=dis[tmp.x][tmp.y]+1;
+}
+````
 
 <br>
 
 ### 토마토 BFS
-
-
-
-
+- 익은 토마토는 하루 뒤 인접한 토마토를 익히는 전염문제
+- 위 문제와 유사함
+- (추가)static int[][] board, dis;
+- (추가)static int n, m;
+````
+public void BFS(){
+		while(!Q.isEmpty()){
+			Point tmp=Q.poll();
+			for(int i=0; i<4; i++){
+				int nx=tmp.x+dx[i];
+				int ny=tmp.y+dy[i];
+				if(nx>=0 && nx<n && ny>=0 && ny<m && board[nx][ny]==0){
+					board[nx][ny]=1;
+					Q.offer(new Point(nx, ny));
+					dis[nx][ny]=dis[tmp.x][tmp.y]+1;
+				}
+			}
+		}	
+	}
+````
+- 모두 익지 못한 상황을 체크해야함.
+- 배열이 2가지 필요함. 익은 토마토, 안익은 토마토, 빈자리 가 담긴 토마토판, 각 자리의 토마토가 며칠 걸려서 익는지 기록하는판
+- BFS가 돌기 전에 익은 토마토를 1로 시작지점을 모두 체크해놔야함
+- 토마토판에서 0이 팔견되면 안익은 토마토 존재하므로 -1 출력
+- 메인에서 접근하므로 같이 쓰는 자원은 static
+````
+T.BFS();
+boolean flag=true;
+int answer=Integer.MIN_VALUE;
+for(int i=0; i<n; i++){
+	for(int j=0; j<m; j++){
+		if(board[i][j]==0) flag=false;
+	}
+}
+if(flag){
+	for(int i=0; i<n; i++){
+		for(int j=0; j<m; j++){
+			answer=Math.max(answer, dis[i][j]);
+		}
+	}
+	System.out.println(answer);
+}
+else System.out.println(-1);
+````
 
 <br>
 
