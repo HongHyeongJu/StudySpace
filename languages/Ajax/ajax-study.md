@@ -1,5 +1,7 @@
 ### 변경점만 요약 정리
 템플릿 버튼에 id와 data속성 추가
+*** 유데미 강의 478~
+
 
 ````html
 <!--         <form action="/posts/<%= post._id %>/comments" method="GET"> -->
@@ -109,7 +111,7 @@ async function fetchCommentsForPost(event){
 <br>
 <br>
 
-
+*** 유데미 강의 484~
 
 
 
