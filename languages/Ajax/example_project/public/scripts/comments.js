@@ -2,6 +2,10 @@
 
 const loadCommnetsBtnElement = document.getElementById('load-comments-btn');
 const commentsSectionalElement = document.getElementById('comments');
+const commentsFormElement = document.querySelector('#comments-form from');
+//from엘리먼트는 해당 자바스크립트 코드가 있을 경우 제출될 때 이벤트도 같이 제출함
+const commentTitleElement = document.getElementById('title');
+const commentTextElement = document.getElementById('text');
 
 
 //댓글 목록 준비하기
@@ -34,7 +38,27 @@ async function fetchCommentsForPost(event){
     commentsSectionalElement.innerHTML = ''; //현재 있는 모든 콘텐츠 제거
     commentsSectionalElement.appendChild(commentsListElement);
 
+}
+
+function saveComment(event) {
+    event.preventDefault();
+    const postId = commentsFormElement.dataset.postid;
+    const enteredTitle = commentTitleElement.value();
+    const enteredText = commentTextElement.value();
+
+    // console.log(enteredTitle); 확인
+    fetch(`/posts/${postId}/comments`, {
+        //두번째 매개변수는 다른 속성을 설정할 수 있는 객체
+        // method:
+    });
 
 }
 
+
 loadCommnetsBtnElement.addEventListener('click', fetchCommentsForPost);
+commentsFormElement.addEventListener('submit', saveComment);
+
+
+
+
+
