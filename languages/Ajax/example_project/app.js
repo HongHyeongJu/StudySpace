@@ -12,6 +12,7 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
 app.use(express.urlencoded({ extended: true })); // Parse incoming request bodies
+app.use(express.json()); // json데이터도 받을 수 있도록 추가. 들어오는 모든 요청을 구문분석하고 제이슨 형식인지 확인함
 app.use(express.static('public')); // Serve static files (e.g. CSS files)
 
 app.use(blogRoutes);

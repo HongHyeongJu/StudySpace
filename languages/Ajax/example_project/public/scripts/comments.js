@@ -46,10 +46,13 @@ function saveComment(event) {
     const enteredTitle = commentTitleElement.value();
     const enteredText = commentTextElement.value();
 
+    const comment = {title: enteredTitle, text: enteredText};
+
     // console.log(enteredTitle); 확인
     fetch(`/posts/${postId}/comments`, {
         //두번째 매개변수는 다른 속성을 설정할 수 있는 객체
-        // method:
+        method: 'POST',
+        body: JSON.stringify(comment)  //JSON 데이터를 받기 위해 app.js에  app.use(express.json());  추가함
     });
 
 }
