@@ -1,4 +1,4 @@
-### CSRF 사이트 간 요청 위조
+## CSRF 사이트 간 요청 위조
 * 사이트 간 요청 위조로부터 보호하는 방법
   * 동기화 토큰 패턴 이용하기 : 요청마다 토큰을 생성하기. 사용자가 수행하는 작업 각각에 새 토큰 생성하기
     *  POST, PUT과 같은 업데이트 요청이 있을 때 이 토큰으로 인증하기. 애플리케이션에서 업데이트 작업을 할 때마다 이전 요청에서 생성된 토큰 사용하기
@@ -171,6 +171,7 @@ public enum SessionCreationPolicy {
 
 * 즉, 세션을 생성하거나 사용하지 않고, 각 요청은 독립적으로 인증되어야  
 ```` java
+@Configuration
 public class BasicAuthSecurityConfiguration {
 
     @Bean
