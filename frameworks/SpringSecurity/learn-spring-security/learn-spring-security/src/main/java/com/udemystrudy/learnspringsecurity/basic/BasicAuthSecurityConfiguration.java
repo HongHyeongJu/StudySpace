@@ -12,6 +12,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
@@ -74,18 +75,24 @@ public class BasicAuthSecurityConfiguration {
     @Bean
     public UserDetailsService userDetailsService(DataSource dataSource){
 
-        UserDetails user1 = User.withUsername("hello")
-                                .password("{noop}world")
+        var user1 = User.withUsername("hello")
+//                                .password("{noop}world")
+                                .password("world")
+                                .passwordEncoder(str -> passwordEncoder().encode(str))
                                 .roles("USER")
                                 .build();
 
-        UserDetails user2 = User.withUsername("lemon")
-                                .password("{noop}candy")
+        var user2 = User.withUsername("lemon")
+//                                .password("{noop}candy")
+                                .password("candy")
+                                .passwordEncoder(str -> passwordEncoder().encode(str))
                                 .roles("ADMIN")
                                 .build();
 
-        UserDetails user3 = User.withUsername("black")
-                                .password("{noop}pink")
+        var user3 = User.withUsername("black")
+//                                .password("{noop}pink")
+                                .password("pink")
+                                .passwordEncoder(str -> passwordEncoder().encode(str))
                                 .roles("PLAYER")
                                 .build();
 
@@ -97,6 +104,15 @@ public class BasicAuthSecurityConfiguration {
         return jdbcUserDetailsManager;
 
     }
+
+
+    @Bean
+    public BCryptPasswordEncoder passwordEncoder(){
+        return new BCryptPasswordEncoder();
+    }
+
+
+
 
 
 }
