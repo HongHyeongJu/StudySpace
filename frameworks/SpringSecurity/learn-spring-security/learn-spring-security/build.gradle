@@ -20,6 +20,8 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-devtools'  //자동 재시작
 	implementation 'org.springframework.boot:spring-boot-starter-jdbc'  //jdbc 추가
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+													//스프링키큐리티 JWT를 위한 의존성 추가
 	implementation 'com.h2database:h2'  //h2 DB
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
