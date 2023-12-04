@@ -34,13 +34,18 @@ async function fetchCommentsForPost(event){
     const response = await fetch(`/posts/${postId}/comments`); //이 URL로 HTTP요청이 감
     const responseData = await response.json();
 
-    const commentsListElement = createCommentsList(responseData);
-    commentsSectionalElement.innerHTML = ''; //현재 있는 모든 콘텐츠 제거
-    commentsSectionalElement.appendChild(commentsListElement);
+    //댓글이 없는 이 시나리오 처리
+    if(responseData && responseData.length > 0){
+        const commentsListElement = createCommentsList(responseData);
+        commentsSectionalElement.innerHTML = ''; //현재 있는 모든 콘텐츠 제거
+        commentsSectionalElement.appendChild(commentsListElement);
+    } else {
+        commentsSectionalElement.firstElementChild.textContent = '댓글을 찾을 수 없습니다. 추가하시겠습니까?';
+    }
 
 }
 
-function saveComment(event) {
+async function saveComment(event) {
     event.preventDefault();
     const postId = commentsFormElement.dataset.postid;
     const enteredTitle = commentTitleElement.value();
@@ -49,11 +54,17 @@ function saveComment(event) {
     const comment = {title: enteredTitle, text: enteredText};
 
     // console.log(enteredTitle); 확인
-    fetch(`/posts/${postId}/comments`, {
+    const response = await fetch(`/posts/${postId}/comments`, {
         //두번째 매개변수는 다른 속성을 설정할 수 있는 객체
         method: 'POST',
-        body: JSON.stringify(comment)  //JSON 데이터를 받기 위해 app.js에  app.use(express.json());  추가함
+        body: JSON.stringify(comment), //JSON 데이터를 받기 위해 app.js에  app.use(express.json());  추가함
+
+        headers : {
+            'Content-Type': 'application/json'  //이 요청이 일부 제이슨 데이터를 전달함
+        }
     });
+
+    fetchCommentsForPost(); //해당 모든 댓글에 관해 또 다른 {GET} 요청을 다시 보냄
 
 }
 
