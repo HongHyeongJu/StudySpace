@@ -1,6 +1,11 @@
 package com.udemystrudy.learnspringsecurity.jwt;
 
+import com.nimbusds.jose.JOSEException;
+import com.nimbusds.jose.KeySourceException;
+import com.nimbusds.jose.jwk.JWK;
+import com.nimbusds.jose.jwk.JWKSelector;
 import com.nimbusds.jose.jwk.JWKSet;
+import com.nimbusds.jose.proc.SecurityContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
@@ -12,6 +17,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -22,6 +28,7 @@ import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 //import java.security.interfaces.RSAKey;
 import java.security.interfaces.RSAPublicKey;
+import java.util.List;
 import java.util.UUID;
 
 import com.nimbusds.jose.jwk.RSAKey; //RSA객체 만들기
@@ -129,15 +136,18 @@ public class JWTSecurityConfiguration {
 
     //JSON Web Key source 만들기  (JWKSet 만들고 이걸로 JWKSource 만듦)
     @Bean
-    public JWKSource jwkSource(RSAKey rsaKey){
-        var jwtSet = new JWKSet(rsaKey);
+    public JWKSource<SecurityContext> jwkSource(RSAKey rsaKey){
+        var jwkSet = new JWKSet(rsaKey);
+
+        return  (jwkSelector, context) -> jwkSelector.select(jwkSet);
+
     }
 
 
-//    @Bean
-//    public JwtDecoder jwtDecoder(){
-//        return Decoder()
-//    }
+    @Bean
+    public JwtDecoder jwtDecoder(RSAKey rsaKey) throws JOSEException {
+        return NimbusJwtDecoder.withPublicKey(rsaKey.toRSAPublicKey()).build();
+    }
 
 
 

@@ -113,8 +113,39 @@ import com.nimbusds.jose.jwk.RSAKey;        //nimbusds import를 꼭 확인하�
 
 ### [3] JSON Web Key source 만들기
 * RSA 키 하나만 있는 JWKSet 만들고 -> 이것을 이용해서 JWKSource 만들기
-* 
+```java
+public interface JWKSource <C extends SecurityContext> {
 
+	List<JWK> get(final JWKSelector jwkSelector, final C context)
+		throws KeySourceException;
+}
+```
+* JWKSource는 get()메서드를 구현해야함
+* 람다식을 이용해서 간추리기, 매개변수로 jwkSet을 사용함
+```java
+    @Bean
+    public JWKSource<SecurityContext> jwkSource(RSAKey rsaKey){
+        var jwkSet = new JWKSet(rsaKey);
+
+        return  (jwkSelector, context) -> jwkSelector.select(jwkSet);
+
+    }
+
+```
+
+
+### 디코더 만들기
+* Nimbus가 디코더와 인코더를 모두 제공함. 
+* 디코더 클래스를 살펴보면 많은 메서드가 있는데 그 중 withPublicKey()메서드를 사용
+* 이 메서드는 RSAPublicKey를 매개변수로 받음. 이것의 인스턴스를 생성하고 디코딩에 사용함
+```java
+@Bean
+public JwtDecoder jwtDecoder(RSAKey rsaKey) throws JOSEException {
+        return NimbusJwtDecoder.withPublicKey(rsaKey.toRSAPublicKey()).build();
+        }
+```
+* 미처리 예외 타입 JOSEException
+* 이 Bean을 직접 연결하지 않을 것이기때문에 예외내도 상관 없음
 
 
 
