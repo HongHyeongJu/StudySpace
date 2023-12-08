@@ -1,0 +1,27 @@
+
+/*본문과 네비게이션을 감싸는 div*/
+.parent-flex-navigator {
+    display: flex;
+}
+
+
+/*목차 네비게이터 css*/
+#tag-navigation {
+    flex-basis: 20%;
+    background-color: white;
+    border: solid 3px #F5F5F5;
+    position: fixed;
+    top: 50px; /*상단 고정값*/
+    right: 0; /*우측 고정 값*/
+    margin-right: 50px;
+    margin-top: 50px;
+    width: 150px;
+    padding: 10px;
+    font-size: 0.8rem; /*글자 크기*/
+    z-index: 9999; /* 다른 요소보다 위에 올림 */
+}
+
+/*li 태그의 동그라미 없애기css*/
+#tag-navigation a li {
+    list-style-type: none;
+}
