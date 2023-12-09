@@ -46,17 +46,7 @@
 ```html
 <style>
     
-    /*본문과 네비게이션을 감싸는 div*/
-    .parent-flex-navigator {
-        display: flex;
-    }
-
-    
-    /*목차 네비게이터 css*/
-    #tag-navigation {
-        flex-basis: 20%;
-        background-color: white;
-        border: solid 3px #F5F5F5;
+    쁨
         position: fixed;
         top: 50px; /*상단 고정값*/
         right: 0; /*우측 고정 값*/
