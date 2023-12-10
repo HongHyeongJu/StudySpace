@@ -45,24 +45,33 @@
 ![img_5.png](img_5.png)
 ```html
 <style>
-    
-    쁨
+    /*본문과 네비게이션을 감싸는 div*/
+    .parent-flex-navigator {
+        display: flex;
+    }
+
+
+    /*목차 네비게이터 css*/
+    #tag-navigation {
+        flex-basis: 20%;
+        background-color: white;
+        border: solid 3px #F5F5F5; /*F5는 회색, #bcdafa는 하늘색 파스텔톤*/
         position: fixed;
         top: 50px; /*상단 고정값*/
         right: 0; /*우측 고정 값*/
         margin-right: 50px;
         margin-top: 50px;
-        width: 150px;
+        width: 180px; /*네비게이터 너비 값*/
         padding: 10px;
         font-size: 0.8rem; /*글자 크기*/
         z-index: 9999; /* 다른 요소보다 위에 올림 */
     }
-    
+
     /*li 태그의 동그라미 없애기css*/
     #tag-navigation a li {
         list-style-type: none;
     }
-    
+
 </style>
 ```
 
@@ -140,7 +149,7 @@
     
     /*
     * div 태그 채우기
-    * 조건 : 본문에서 제목1(h1), 제목2(h2), 제목3(h3), 제목1(h1), blockquote(그 중에서 data-ke-style="style2"인 것)
+    * 조건 : 본문에서 제목1(h1), 제목2(h2), 제목3(h3), blockquote(그 중에서 data-ke-style="style2"인 것)
     * */
     function fillTagNavigationDiv() {
         // contents_style 클래스를 가진 div 요소 선택
