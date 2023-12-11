@@ -9,13 +9,13 @@
 #tag-navigation {
     flex-basis: 20%;
     background-color: white;
-    border: solid 3px #F5F5F5;
+    border: solid 3px #F5F5F5; /*F5는 회색, #bcdafa는 하늘색 파스텔톤*/
     position: fixed;
     top: 50px; /*상단 고정값*/
     right: 0; /*우측 고정 값*/
     margin-right: 50px;
     margin-top: 50px;
-    width: 150px;
+    width: 180px; /*네비게이터 너비 값*/
     padding: 10px;
     font-size: 0.8rem; /*글자 크기*/
     z-index: 9999; /* 다른 요소보다 위에 올림 */

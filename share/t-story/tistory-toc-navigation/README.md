@@ -3,12 +3,12 @@
 * 매우 쉽고 간단합니다
 * 각 티스토리의 테마에 맞게 수정할 수 있도록 css에 주석을 달아두었습니다
 * 네비게이터를 만드는 기준
-  * 본문에서 제목1(h1), 제목2(h2), 제목3(h3), 제목1(h1)
-  * blockquote(그 중에서 data-ke-style="style2"인 것) 입니다
+  * 글 작성에서 **제목1**(h1), **제목2**(h2), **제목3**(h3) 이거나
+  * **blockquote**(그 중에서 **data-ke-style="style2"**인 것) 입니다
   * 네비게이터 기준에 따라 글을 작성하면 좋습니다
 * 각 목차별 레벨은 설정하지 않았습니다. 모두 동일 레벨입니다
 * 궁금한 점은 티스토리에 댓글 달아주세요
-* /네비게이터 글 링크/
+* [/티스토리 글 링크/](https://labmate-dev.tistory.com/137)
 
 
 <br>
@@ -45,34 +45,33 @@
 ![img_5.png](img_5.png)
 ```html
 <style>
-    
     /*본문과 네비게이션을 감싸는 div*/
     .parent-flex-navigator {
         display: flex;
     }
 
-    
+
     /*목차 네비게이터 css*/
     #tag-navigation {
         flex-basis: 20%;
         background-color: white;
-        border: solid 3px #F5F5F5;
+        border: solid 3px #F5F5F5; /*F5는 회색, #bcdafa는 하늘색 파스텔톤*/
         position: fixed;
         top: 50px; /*상단 고정값*/
         right: 0; /*우측 고정 값*/
         margin-right: 50px;
         margin-top: 50px;
-        width: 150px;
+        width: 180px; /*네비게이터 너비 값*/
         padding: 10px;
         font-size: 0.8rem; /*글자 크기*/
         z-index: 9999; /* 다른 요소보다 위에 올림 */
     }
-    
+
     /*li 태그의 동그라미 없애기css*/
     #tag-navigation a li {
         list-style-type: none;
     }
-    
+
 </style>
 ```
 
@@ -150,7 +149,7 @@
     
     /*
     * div 태그 채우기
-    * 조건 : 본문에서 제목1(h1), 제목2(h2), 제목3(h3), 제목1(h1), blockquote(그 중에서 data-ke-style="style2"인 것)
+    * 조건 : 본문에서 제목1(h1), 제목2(h2), 제목3(h3), blockquote(그 중에서 data-ke-style="style2"인 것)
     * */
     function fillTagNavigationDiv() {
         // contents_style 클래스를 가진 div 요소 선택
@@ -229,14 +228,16 @@
 
 <br> 
 
-#### 6. 디자인을 수정하고 싶을 때
-* 스트립트에서 아래 부분 주석을 풀고 왼쪽 화면의 [새로고침]을 누르고
+#### 6. 스킨 편집 창에서 디자인을 수정을 조금씩 하고 싶을 때
+* html 편집 버튼을 누르고 왼쪽 미리 보기 창을 [글]로 설정.
+* 스트립트에서 아래 부분 주석을 풀고 왼쪽 화면의 [새로고침]을 누르면 네비게이터 창이 보임
 ![img_10.png](img_10.png)
-* 상단의 css부분을 고칩니다
+* 자신의 컨셉에 맞게 상단의 css부분을 고칩니다 (고치고 -> 왼쪽 미리보기창 새로고침 버튼 -> 마음에 들면 오른쪽 창 적용 버튼)
 ![img_11.png](img_11.png)
 * 상자 색깔 background-color
 * 테두리 border
 * 그 외에도 글자 색깔, 테두리 둥글리기, 위치 변경을 할 수 있습니다
+* 완료시 글 페이지에서만 네비게이터가 생성되도록 주석을 풀었던 부분을 다시 주석으로 적용합니다다
 
 
 
