@@ -104,7 +104,7 @@ async function saveComment(event) {
 
 ### 댓글이 없는 이 시나리오 처리
 * {fetchCommentsForPost} 함수 수정
-````
+````javascript
 //해당 데이터, 댓글 데이터를 가져오기 위해 서버에  ajax 요청 보내기
 async function fetchCommentsForPost(event){
     const postId = loadCommnetsBtnElement.dataset.postid;
