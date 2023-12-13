@@ -60,7 +60,7 @@ function saveComment(event) {
 ### 사용자 경험(UX) 개선
 * 응답을 받으면 프로미스가 해결되도록 {saveComments}를 비동기 함수로 변환
 * 비동기로 변환하는 이유
-  * 실제로 여기에 관한 응답에 관심이 있지만, 응답을 받을 때까지 대기하는 데는 관심이 음
+  * 실제로 여기에 관한 응답에 관심이 있지만, 응답을 받을 때까지 대기하는 데는 관심이 없음
   * 그 다음 줄에서 실제로 다시 모든 댓글을 가져올 수 있기 때문에
 ````javascript
 async function saveComment(event) {
