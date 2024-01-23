@@ -98,8 +98,8 @@ idx:cars ON HASH PREFIX 1 cars#
   SCHEMA name TEXT year NUMERIC color TAG
 ```
 * 인덱스 사용해보기 
-  * name이 fast car인 해시 찾기
-    * ```FT.SEARCH idx:cars '@name: (fast car)'  ``` 
+  * name이 fast car인 해시 찾기 
+    * ```FT.SEARCH idx:cars '@name: (fast car)'  ```  
   * color이 blue인 자동차 찾기
     * ```FT.SEARCH idx:cars '@color:{blue}'  ``` 
   * year이 1955이거나 1980인 자동차 찾기
@@ -119,60 +119,139 @@ idx:cars ON HASH PREFIX 1 cars#
   * 구분하고 있으면 읽기가 수월함
 #### 인덱스 명령어 분해해서 이해하기
 * ```idx:cars ON HASH PREFIX 1 cars# SCHEMA name TEXT year NUMERIC color TAG```
-  * idx:cars : 만들고자 하는 인덱스 이름
+  * ```idx:cars```
+    * 만들고자 하는 인덱스 이름
     * idx + : + 찾는대상
-    * 인덱스 삭제시 ```FT.DROPINDEX```
-보여주려 하는 경우입니다
-* 필기
-* 필기
-* 필기
+    * 인덱스 삭제시 ```FT.DROPINDEX``` 사용
+  * ```ON HASH``` 
+    * 옵션은 HASH or JSON만 가능함(JSON은RedisJSON 모듈 사용시)
+  * ```PREFIX 1 cars#``` 
+    * 검색하려는 레코드의 인덱스를 알려주기
+    * FT.CREATE는 내부적으로 ```cars#```라는 문자열로 시작하는 모든 키를 찾음
+    * ```1```은 찾기위해 제공하는 인덱스의 개수
+    * 다른 예시 ```PREFIX 2 cars# trucks#``` 
+  * ```SCHEMA``` 
+    * RediSerach가 검사할 모든 각각의 해시의 안에서 RediSearch가 찾아보길 원하는 다양한 속성을 설명하는데 사용함
+  * ```name TEXT year NUMERIC color TAG```
+    * SCHEMA 바로 뒤에 필드의 이름 나열하고 그 안에 있는 값의 타입을 나열함
+    * 이름, 타입 +  ```이름데이터, 타입데이터```
+    * 만약 color부분 검색 생략하고 싶다면 명시 하지 않으면 됨
 #### 인덱스 필드 타입
-
+ * ```name TEXT```, ```year NUMERIC```, ```color TAG```에서 TEXT, NUMERIC, TAG 등
+* NUMERIC
+  * 인덱스에 대해 숫자를 이용한 쿼리를 하려고 할 때 해시 안의 필드에 숫자를 저장함
+* GEO
+  * 지리적 좌표가 포함된 경우 필드를 표시할 때
+* VECTOR
+  * 레코드들 간의 유사성을 찾을 수 있게 해주는 고급쿼리
+* TAG
+  * 쿼리에 사용 
+  * 해시 안의 문자열을 쿼리 용어로 사용할 때
+* TEXT
+  * 검색에 사용
+  * 해시 안의 필드를 검색작업에 사용할 때
+#### 인덱스 필드 TAG와 TEXT의 차이
+* TAG
+  * 정확히 같은거나, 정확히 같지 않은 것을 찾을 때
+  * 정답이 있는 필드
+* TEXT
+  * 검색작업
+  * 사용자가 직접 데이터를 입력하는 경우
+  * 제품 이름이나 리뷰 등
+  * 정답이 없는 필드
+  * 예상치 못한 문자열을 입력하는 부분
 
 <br>
 
 
-### 숫자형 쿼리
-* 필기
-* 필기
-* 필기
-* 필기
-* 필기
+### SEARCH 명령어
+* 명령어 ```FT.SEARCH``` 관련 공식 문서
+  * redis.io/commands/ft.search
+  * 페이지를 내리다 보면 Parameters섹션에 쿼리에 관한 섹션 있음
+  * 설명의 Query Syntax를 검색하면 별도의 페이지 이동이 가능함
+  * https://redis.io/docs/interact/search-and-query/query/
+  * 쿼리 작성 시 어려움이 있을 때 이 문서를 찾아보기!
+* 검색의 예시
+  * ```@name:(fast car)```, ```@color:{blue}```, ```@year:[1955 1980]```
+  * 1955나 1980년에 생성된 자동차이면서 + 색깔이 blue인 자동차 찾기 znjfl
+  * FT.SEARCH idx:cars '@year:[1955 1980] @color:{blue}'
+* 쿼리 작성시 주의점
+  * 쿼리는 항상 따옴표 안에 작성해야함
+  * 설령 문서에 특별히 표시되어 있지 않아도 항상 쿼리를 따옴표 안에 넣기
+  * 문서의 예시에서는 쿼리에 따옴표 표시를 생략한 부분도 있어서 조심하기
+  * 쿼리 안에 따옴표를 사용해야 할 경우에는 바깥쪽 문자열에 사용하지 않은 따옴표를 사용하기(쿼리 바깥은 '', 쿼리 안쪽은 "")
 
+
+<br>
+
+### 숫자형 쿼리
+* @year:[1955 1980]
+  * 1955 <= year <= 1980
+* @year:[(1955 (1980]
+  * 1955 < year < 1980
+* @year:[1955 +inf]
+  * 1955 <= year
+* @year:[-inf 1955 ]
+  * year <= 1955
+* -@year:[1955 1980]
+  * year < 1955
+  * 1980 < year
 
 
 <br>
 
 
 ### 태그 쿼리
-* 필기
-* 필기
-* 필기
-* 필기
-* 필기
+* @color:{blue}
+  * 색상이 blue인 레코드 찾기
+* @color:{blue}
+  * 색상이 blue가 아닌 레코드 찾기
+* @color:{red|blue}
+  * red거나 blue인 모든 레코드
+* @color:{light\blue}
+  * 'light blue'라는 문자열이 있을 때
+* 주의점
+  * 불용어를 포함하면 Redis는 자동으로 필터링하여서 제거함
+  * ex) @cities:{to | a | or} => Redis는   @cities:{} 로 인식함
+  * 텍스트 쿼리에서도 마찬가지임
 
 
 <br>
 
 
 ### 텍스트 쿼리
-* 필기
-* 필기
-* 필기
-* 필기
-* 필기
+* 전처리 단계를 거침
+  * 해시필드에 있는 텍스트 뿐만 아니라 실제 쿼리 텍스트도 약간의 전처리 단계를 거치게 됨
+  * 모든 다양한 불용어들이 삭제됨 ex)a, the
+* 스테밍 (stemming)이라는 기법을 쿼리에 적용함
+  * 검색을 위해 어떤 어어를 쓰든지 접두어나 접미어가 있을 수 있는 복잡한 단어의 경우에는 그 단어의 더 흔한 형태로 축약됨
+  * 이해를 돕는 링크 snowballstem.org/demo.html
+  * 검색어를 유연하게 만들어주는 것
+  * 사용자가 단어 압에 접두어를 추가해도 그 단어의 접두어가 없는 더 흔한 버전을 매칭하게 될 것임
+* fast
+  * @를 쓰지 않으면 해당 문자열을 이용해서 타입이 TEXT로 표시된 모든 필드에 걸쳐 검색함
+* @name:(fast car)
+  * fast AND car
+* @name:(fast|car)
+  * fast OR car  (+ fast AND car)
+* -@name:(fast)
+  * fast를 포함하지 않은  것
 
 
 <br>
 
 
 ### 퍼지 검색
-* 필기
-* 필기
-* 필기
-* 필기
-* 필기
-
+* 퍼지 매칭에는 퍼센트(%) 기호를 사용함
+* 와일드 카드가 아니고, 사용자가 입력한 것과 그들이 실제로 검색하려는 것 가이에 불일치하는 문자의 개수를 구하는 것
+* ex) car를 검색하려던 사용자가 실수로 dar라고 입력함 => 문자 1개가 불일치함
+* 문자 1개 불일치도 검색
+  * ```FT.SEARCH idx:cars '@name:(%dar%)'```
+  * ```FT.SEARCH idx:cars '@name:(%gast%)'```
+* 문자 2개 불일치도 검색
+  * ```FT.SEARCH idx:cars '@name:(%%dar%%)'```
+* 양쪽에 최대 3개까지 % 기호를 넣을 수 있음
+* 오탈자 한두 개를 넣어도 스마트한 결과를 받을 수 있도록 하는 기법
 
 
 
@@ -180,47 +259,25 @@ idx:cars ON HASH PREFIX 1 cars#
 
 
 ### 접두어 검색
-* 필기
-* 필기
-* 필기
-* 필기
-* 필기
+* 접두어 검색시 최소한 문자가 2개 있어야 함
+  * 불가능한 경우: f*, a*, b*
+* ```fa*``` 라고 입력하면 자동으로 쿼리가 확장되어 fast, far, fact, fawn, fantastic 등이 포함됨
 
 
 <br>
 
 
 ### 검색어 전처리 기준
-* 필기
-* 필기
-* 필기
-* 필기
-* 필기
+* 검색 작업 단계
+  * [1] 자동완성 옵션 리스트를 표시하는 단계
+    * 선택사항
+    * fa라고 입력하면 far, fast 등의 자동완성을 표시
+  * [2] 사용자가 쿼리를 제출하는 단계
+    * 사용자가 fast 라고 입력하면 퍼지검색 사용
+* 사용자의 오타 처리 ex) ```fast fasty fast car``` 
+* 검색로직은 만드는 애플리케이션에 따라 최적이 다르다 (159강. 04:00 다시 확인) 
 
 
-
-
-
-<br>
-
-
-### 주제
-* 필기
-* 필기
-* 필기
-* 필기
-* 필기
-
-
-<br>
-
-
-### 주제
-* 필기
-* 필기
-* 필기
-* 필기
-* 필기
 
 
 
