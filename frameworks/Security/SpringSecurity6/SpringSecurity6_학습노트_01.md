@@ -79,24 +79,55 @@
 <br>
 
 
-### Spring Security 기본 동작의 순서 흐름
-* 내용
-* 내용
-* 내용
-* 내용
-* 내용
-* 내용
+### Spring Security 몇가지 중요한 내부 필터
+#### Authorization 필터
+* 책임 : 엔드 유저가 접근하고자 하는 URL에 접근을 제한하는 것
+* 공개 URL이라면 응답은 엔드유저에게 자격증명을 요구하지 않고 바로 표시됨
+* 보안 URL에 접근하고자 한다면 해당 URL의 접근을 멈추고, 해당 요청을 Spring Securtity 필터체임의 다음 필터로 리다이렉트 함
+  * 내부 코드를 보면 doFilter라는 메소드가 권한 부여 관리자의 도움을 받아서 특정 URL이 공개/보안인지 체크 후 접근 허용/거부 함
+#### DefaultLoginPageGenerating 필터
+* 보안 URL에 접근하려고 할 때 로그인 페이지를 보여주는 것이 바로 이 필터의 도움
+* generateLoginPageHtml 메서드를 
+  * 로그인 페이지 관련 HTML 코드가 존재함
+  * 꾸미는 것은 부트스트랩 이용함
+  * form 태그와 Post, 전송 URL 구성 방법을 확인할 수 있음
+#### UsernamePasswordAuthentication 필터
+* 엔드 유저가 본인의 유저네임(loginId), 비밀번호같은 자격증명을 입력하고 나면 등장함
+* attemptAuthentication이라는 메소드
+  * 책임 : 수신하는 http의 출력요청으로부터 유저 네임과 비밀번호를 추출하는 것
+  * 이 요청으로 추출한 정보로 UsernamePasswordAuthenticationToken 객체를 생성함
+  * UsernamePasswordAuthenticationToken 객체
+    * 이 클래스는 인증 인터페이스를 구현함(implements Authentication)
+    * Authenticate 메서드를 호출해서 인증 관리자에게 넘기게됨
+    * 인증 관리자(class ProviderManager)도 AuthenticationManager 인터페이스의 구현임
+      * authenticate라는 메서드가 있음
+      * 역할 : 프레임워크 내에 사용 가능한 모든 인증 제공자/개발자가 정의한 인증제공자와 상호작용 시도
+      * for(AuthenticationProvider provider : gerProviders()) 반복문으로 모든 적용 가능한 인증 제공자를 반복함
+      * ProviderManager는 인증 성공이나 인증 실패를 확인할 때 까지 인증 제공자들을 반복함
+      * ProviderManager는 Spring Security의 인증 제공자중 DaoAuthenticationProvider 를 호출함(이 클래스는 extends AbstractUserDetailsAuthenticationProvder)
+        * ProviderManager가 DaoAuthenticationProvider 클래스의 내부에는 authenticate 메소드에 요청을 전송하고
+        * 이 authenticate 메서드 안에서 모든 인증 로직이 반환됨
+        * 유저 네임이 무엇인지 불러오고, 이 유저네임을 활용해서 retrieveUser 메서드를 호출함
+        * retrieveUser 메서드 내부에서 인증 제공자가 UserDetailsManager 또는 UserDetailsService의 도움을 받는것을 볼 수 있음. (+Password Encoderd)
+        * 모든 역할과 책임을 분리해둔 것.
+          * 강의의 예시에서는 DaoAuthenticationProvider 클래스의 retrieveUser 메서드가 UserDetailsManager의 구현체 중 하나인 InMemoryUserDetailsManager 클래스의 도움을 받아 유저 자격 증명을 이용함
+          * 이 클래스에서는 loadUserByUsername 메서드를 호출
+      * retrieveUser 메서드는 UserDetails를 반환함 -> authenticate 메서드 내부에서 유저 정보를 받아서 additionalAuthenticationChecks와 같은 추가 메서드에 전달함(additionalAuthenticationChecks도 DaoAuthenticationProvider의 메서드)
+      * additionalAuthenticationChecks 메서드는 UI에서 제공한 비밀번호와 저장소 내부의 비밀번호를 비교함
+        * 물론 여기서도 Password Encoder를 활용함
+        * this.matches 메소드가 비밀번호가 일치한다는 의미로 true 반환 시 이 응답은 ProviderManager에 전달됨
+* 인증 성공적이라면 프레임워크는 보호된 API URL 보안 웹페이지를 표시해줌
+
 
 <br>
 
 
+
 ### 인증 정보 없이 요청을 처리하는 과정 이해
-* 내용
-* 내용
-* 내용
-* 내용
-* 내용
-* 내용
+* Spring Security 프레임워크가 엔드 유저에게서 수신하는 다수의 요청을 받을 때 유저 자격증명을 반복해서 요구하지 않는 이유
+* 사용자가 로그인하면 새로은 세션ID(JSESSIONID)를 재생성해서 브라우저 쿠키로 반환함
+* 기본적으로 모든 로그인된 유저에 대해 JSESSIONID값을 생성해서 유저들에게 반복적으로 강제하지 않음
+* 물론 이건은 기본 동작이며 엄청나게 안전하지 않기 때문에 JWT토큰을 이용한 고급 접근법이나 프레임워크를 이용해야함(추후 강의)
 
 <br>
 
