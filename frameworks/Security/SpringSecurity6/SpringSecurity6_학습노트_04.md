@@ -178,7 +178,8 @@ public class LoginController {
 * SecureRandom 값의 목적은 무작위로 생성된 값을 더해주도록 함
 * 모든 PasswordEncoder들 또는 다른 비밀번호 관련 클래스들은 org.springframework.security.crypto 패키지에서 찾을 수 있음
 * 이미 업계 표준을 준수하고 있는 제공되는 PasswordEncoder를 사용하자
-
+* BCrypt.hashpw()
+  *  BCrypt 클래스 내에서 일반 텍스트 비밀번호의 해시 값을 생성하는 데 사용되는 메소드
 
 <br>
 
