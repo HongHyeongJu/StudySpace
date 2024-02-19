@@ -33,7 +33,84 @@
 <br>
 
 
-### 소제목
+### 애플리케이션 내에서 AuthenticationProvider 커스터마이징 하기
+* config 패키지에 개인 Provider 클래스 생성하기 ex) ProjectUsernamePasswordAuthenticationProvider
+* ```public class ProjectUsernamePasswordAuthenticationProvider```
+  * implements AuthenticationProvider
+  * 오버라이드 할 메서드 : authenticate(), supports()
+  * supports() 구현
+    * DaoAuthenticationProvide에서 응용할 코드 복사해오기 ```return (UsernamePasswordAuthenticationToken.class.isAssignableFrom(authentication));```
+  * authenticate() : 저장시스템 -> 유저세부사항 로딩, 비밀번호 비교 로직 작성하기
+    * 그러기 위해서 ProjectUsernamePasswordAuthenticationProvider 클래스에 유저Repository와 PasswordEncoder를 Autowired해오기
+  * Spring Security 프레임 워크에 감지될 수 있도록 @Component 붙여주기
+```java
+@Component
+public class EazyBankUsernamePwdAuthenticationProvider implements AuthenticationProvider {
+
+    @Autowired
+    private CustomerRepository customerRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Override
+    public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+        String username = authentication.getName();   //로그인 정보
+        String pwd = authentication.getCredentials().toString();   //로그인 정보
+        List<Customer> customer = customerRepository.findByEmail(username);   //데이터베이스로부터 불러오기
+        if (customer.size() > 0) {
+            if (passwordEncoder.matches(pwd, customer.get(0).getPwd())) {  //비교하기
+                List<GrantedAuthority> authorities = new ArrayList<>();
+                authorities.add(new SimpleGrantedAuthority(customer.get(0).getRole()));   
+                //엔드 유저의 authorities 세부 사항 덧붙여주기, //Role 문자열 값을 SimpleGrantedAuthority 클래스로 변환하기
+                return new UsernamePasswordAuthenticationToken(username, pwd, authorities); 
+            } else {
+                throw new BadCredentialsException("Invalid password!");
+            }
+        }else {
+            throw new BadCredentialsException("No user registered with this details!");
+        }
+    }
+
+    @Override
+    public boolean supports(Class<?> authentication) {
+        return (UsernamePasswordAuthenticationToken.class.isAssignableFrom(authentication));
+    }
+
+}
+```
+* 덧붙여 유저의 연령 세부 정보, 국가 세부 정보를 확인하고, 그에 기반하여 인증을 허용하거나 거부하려는 경우에도 authenticate 메서드 내에 원하는 로직을 작성하면 됨
+* UsernamePasswordAuthenticationToken 생성자
+  * 유저 이름, credentials 그리고 authorities를 authentication 객체에 설정하고 있음
+  * 동시에 authentication이 성공적이라고 명시함
+```	
+public UsernamePasswordAuthenticationToken(Object principal, Object credentials,
+			Collection<? extends GrantedAuthority> authorities) {
+		super(authorities);
+		this.principal = principal;
+		this.credentials = credentials;
+		super.setAuthenticated(true); // must use super, as we override
+	}
+```
+
+<br>
+
+
+### 인증과정 테스트 일부
+* ProviderManager 클래스의 내부 
+* @Override public Authentication authenticate(Authentication authentication) 메서드
+  * 구현과정에서 if (result != null) 인증 성공 후에는 필요없는 인증번호(비밀번호)를 제거함
+    * if (this.eraseCredentialsAfterAuthentication && (result instanceof CredentialsContainer)) {((CredentialsContainer) result).eraseCredentials();}
+    * 보안 문제 우려가 사라짐
+  * 인증 성공 후에는 인증이 성공정으로 발생했다고 이벤트 게제함
+    * if (parentResult == null) { this.eventPublisher.publishAuthenticationSuccess(result); }
+
+
+<br>
+
+
+
+### Spring Security 순서 흐름과 커스텀 AuthenticationProvider
 * 내용
 * 내용
 * 내용
@@ -44,24 +121,7 @@
 <br>
 
 
-### 소제목
-* 내용
-* 내용
-* 내용
-* 내용
-* 내용
-* 내용
 
-<br>
-
-
-### 소제목
-* 내용
-* 내용
-* 내용
-* 내용
-* 내용
-* 내용
 
 <br>
 
