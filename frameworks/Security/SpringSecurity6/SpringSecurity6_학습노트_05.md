@@ -111,41 +111,16 @@ public UsernamePasswordAuthenticationToken(Object principal, Object credentials,
 
 
 ### Spring Security 순서 흐름과 커스텀 AuthenticationProvider
-* 내용
-* 내용
-* 내용
-* 내용
-* 내용
-* 내용
+* 사용자가 로그인 양식에 자신의 자격 증명(보통은 사용자 이름과 비밀번호)을 입력한다.
+* AuthenticationManager (구현체는 ProviderManager)는 등록된 AuthenticationProvider들 중 적절한 것을 찾아 인증 과정을 수행하도록 요청한다.
+* ProviderManager는 AuthenticationProvider의 authenticate 메소드에 인증을 위한 데이터(Authentication 객체)를 넘겨준다.
+* 이 과정에서, 구현한 로직에 따라 사용자 정보를 조회하고, PasswordEncoder를 사용하여 제출된 비밀번호가 저장된 비밀번호와 일치하는지 검증한다.
+* 이 비즈니스 로직에 완벽하게 만족한다면(인증 과정이 성공적으로 완료되면,) AuthenticationProvider는 완성된 Authentication 객체를 ProviderManager에 반환한다. 
+  * 이 객체는 이제 인증된 사용자의 정보를 담고 있음
+* 중요한 점
+  *  더 이상 UserDetailsService, JWC UserDetailsManager, 사용자 상세 서비스, UserDetailsManager의 구현 클래스를 사용하지 않음
+  * 왜냐하면 유저 상세 정보 검색 로직도 authentication 메소드 자체에 작성했기 때문에
 
-<br>
-
-
-
-
-<br>
-
-
-### 소제목
-* 내용
-* 내용
-* 내용
-* 내용
-* 내용
-* 내용
-
-<br>
-
-
-### 소제목
-* 내용
-* 내용
-* 내용
-* 내용
-* 내용
-* 내용
-
-<br>
 
 
 
