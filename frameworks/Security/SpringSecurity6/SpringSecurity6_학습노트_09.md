@@ -306,8 +306,27 @@ public class JWTTokenValidatorFilter  extends OncePerRequestFilter {
 <br>
 
 
-
-
+### 최신버전의 jjwt에서 API직관적으로 개선됨
+* (변경 전)
+```
+(변경 전)
+Claims claims = Jwts.parser()  
+                    .verifyWith(key) //parser() 메서드 안의 Secret Key 호출하기  //강의는 setSigningKey()
+                    .build()
+                    .parseSignedClaims(jwt) 
+                    // 강의는 parseClaimsJws() : 매개변수로 받은 jwt의 서명을 검증하고 
+                    // 검증에 성공하면  Jws<Claims> 객체를 반환함.
+                    //  이 객체는 JWT에서 클레임 세트를 포함하며, 이를 통해 JWT에 담긴 정보에 접근 가능함
+                    .getPayload();  //사전작업 이후 바디(페이로드) 읽기
+```
+* (변경 후)
+```
+(변경 후전)
+Claims claims = Jwts.parser()
+                    .setSigningKey(key)
+                    .parseClaimsJws(jwt)
+                    .getBody();
+```
 
 
 
